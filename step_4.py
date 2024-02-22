@@ -1,7 +1,7 @@
 # підключення необхідних бібліотек
 import cv2
 
-sources = {'video1': "data/Video/bunnies.mp4", 'video2': "data/Video/bunnies.mp4", "web": 0}
+sources = {'video1': "C:/Users/User/PycharmProjects/oop/video/bunnies.mp4"}
 colorspaces = {'Gray': cv2.COLOR_BGR2GRAY, 'XYZ': cv2.COLOR_BGR2XYZ, 'LAB': cv2.COLOR_BGR2LAB,
                'YUV': cv2.COLOR_BGR2YUV, 'HSV': cv2.COLOR_BGR2HSV}
 
