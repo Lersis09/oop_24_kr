@@ -3,12 +3,8 @@ import cv2
 
 sources = {'video1': "C:/Users/User/PycharmProjects/oop/video/bunnies.mp4", 'video2': "web"}
 
-# при запуску як головного файлу
-if __name__ == '__main__':
-     method = 2
 
-
-if method == 1:
+def main():
     # метод зчитування даних з відеофайлу (стор. 142 - 145)
     cap = cv2.VideoCapture(sources.get('video1'))
     # Перевірка готовності веб-камери
@@ -26,8 +22,6 @@ if method == 1:
     # Завершуємо запис у кінці роботи
     cap.release()
     cv2.destroyAllWindows()
-
-elif method == 2:
  # зчитування відно з веб-камери
     cap = cv2.VideoCapture(0)
     # перевірка готовності веб-камери
@@ -47,3 +41,7 @@ elif method == 2:
     # Завершуємо запис у кінці роботи
     cap.release()
     cv2.destroyAllWindows()
+
+# при запуску як головного файлу
+if __name__ == '__main__':
+    main()
