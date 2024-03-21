@@ -25,6 +25,7 @@ def main():
         frame_gray = colorspace_change(frame, 'Gray')
         frame_XYZ = colorspace_change(frame, 'XYZ')
         frame_LAB = colorspace_change(frame, 'LAB')
+        frame_YUV = colorspace_change(frame, 'YUV')
         frame_HSV = colorspace_change(frame, 'HSV')
 
         # Відображення результату
@@ -32,6 +33,7 @@ def main():
         cv2.imshow('frame Grayscale', frame_gray)
         cv2.imshow('frame XYZ', frame_XYZ)
         cv2.imshow('frame LAB', frame_LAB)
+        cv2.imshow('frame YUV', frame_YUV)
         cv2.imshow('frame HSV', frame_HSV)
         if cv2.waitKey(25) == ord('q'):
             break
