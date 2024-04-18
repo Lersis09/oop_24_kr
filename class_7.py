@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-sources = {'video1': "data/Video/Hourglass.mp4", 'video2': "data/Video/Hourglass.mp4", "web": 0}
+sources = {'video1': "C:/Users/User/PycharmProjects/oop/video/bunnies.mp4", 'video2':  "web"}
 
 
 # клас обробки відео-даних
@@ -11,8 +11,8 @@ class VideoProcessing:
     def __init__(self, filename):
         self.__filename = filename
         self.__mode = 0
-        self.__mode_to_func = {1: VideoProcessing.colorspace_change, 2: VideoProcessing.rotate_image,
-                               3: VideoProcessing.binarization, 4: VideoProcessing.sharpening_filtration}
+        self.__mode_to_func = {1: VideoProcessing.colorspace_change, 2: VideoProcessing.mirror,
+                               3: VideoProcessing.corner_detector, 4: VideoProcessing.gaussian_filtration}
         self.__mode_to_step = {0: "Basic", 1: "Colorspace", 2: "Geometric", 3: "Operation", 4: "Filtration"}
         self.__stop_flag = False
 
@@ -30,24 +30,28 @@ class VideoProcessing:
         return cv2.cvtColor(input_frame, cv2.COLOR_BGR2YUV)
 
     @staticmethod
-    def rotate_image(input_frame, angle=45):
-        num_rows, num_cols = input_frame.shape[:2]
-        rotation_matrix = cv2.getRotationMatrix2D((num_cols / 2, num_rows / 2), angle, 1)
-        img_rotation = cv2.warpAffine(input_frame, rotation_matrix, (num_cols, num_rows))
-        return img_rotation
+    def mirror(input_frame):
+        rows, cols = input_frame.shape[:2]
+        src_points = np.float32([[0, 0], [cols - 1, 0], [0, rows - 1]])
+        dst_points = np.float32([[cols - 1, 0], [0, 0], [cols - 1, rows - 1]])
+        affine_matrix = cv2.getAffineTransform(src_points, dst_points)
+        img_output = cv2.warpAffine(input_frame, affine_matrix, (cols, rows))
+        return img_output
 
     @staticmethod
-    def binarization(input_frame, threshold=127):
-        gray_frame = cv2.cvtColor(input_frame, cv2.COLOR_BGR2GRAY)
-        ret, thresh = cv2.threshold(gray_frame, threshold, 255, cv2.THRESH_BINARY)
-        return thresh
+    def corner_detector(input_frame, max_corners=5, quality_level=0.01, min_dist=20):
+        new_image = input_frame.copy()
+        gray_image = cv2.cvtColor(input_frame, cv2.COLOR_BGR2GRAY)
+        corners = cv2.goodFeaturesToTrack(gray_image, max_corners, quality_level, min_dist)
+        corners = np.float32(corners)
+        for item in corners:
+            x, y = item[0]
+            cv2.circle(new_image, (int(x), int(y)), 5, 255, -1)
+        return new_image
 
     @staticmethod
-    def sharpening_filtration(input_frame, kernel_size=3):
-        kernel = np.ones((kernel_size, kernel_size), np.float32)
-        center_index = int((kernel_size - 1) * 0.5)
-        kernel[center_index][center_index] = (kernel_size * kernel_size - 2) * -1
-        return cv2.filter2D(input_frame, -1, kernel)
+    def gaussian_filtration(input_frame, kernel_size=3):
+        return cv2.GaussianBlur(input_frame, (kernel_size, kernel_size), 0)
 
     # методи класу
     def start_processing(self):
@@ -71,6 +75,25 @@ class VideoProcessing:
         # Завершуємо запис у кінці роботи
         cap.release()
         cv2.destroyAllWindows()
+        # зчитування відео з веб-камери
+        cap = cv2.VideoCapture(self.__filename)
+        self.__stop_flag = False
+        # перевірка готовності веб-камери
+        while cap.isOpened() and not self.__stop_flag:
+            # Запис фреймів
+            ret, frame = cap.read()
+            # при виникненні помилки запису
+            if not ret:
+                print("Помилка запису файлу")
+                break
+
+                # Відображення результату
+                cv2.imshow('frame', frame)
+                cv2.imshow('frame_changed', frame_changed)
+                self.__state_check()
+            # Завершуємо запис у кінці роботи
+            cap.release()
+            cv2.destroyAllWindows()
 
     def __state_check(self):
         key_code = cv2.waitKey(25)
@@ -87,6 +110,7 @@ class VideoProcessing:
         elif key_code == ord('q'):
             self.__stop_flag = True
         print(self.get_current_mode_name())
+
 
     def __modify_frame(self, input_frame):
         if self.__mode == 0:
