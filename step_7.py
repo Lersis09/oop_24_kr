@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-sources = {'video1': "C:/Users/User/PycharmProjects/oop/video/bunnies.mp4", 'video2':  "web"}
+sources = {'video1': "C:/Users/User/PycharmProjects/oop/video/bunnies.mp4", 'video2':  0}
 
 
 # клас обробки відео-даних
