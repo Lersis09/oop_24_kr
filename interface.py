@@ -99,7 +99,7 @@ class VideoApp(tk.Tk):
         new_frame = frame.copy()
         gray_frame = cv2.cvtColor(frame, 6)
         corners = cv2.goodFeaturesToTrack(gray_frame, max_corners, quality_level, min_dist)
-        corners = np.int0(corners)
+        corners = np.intp(corners)
         for item in corners:
             x, y = item.ravel()
             cv2.circle(new_frame, (x, y), 5, (255, 255, 255), -1)
