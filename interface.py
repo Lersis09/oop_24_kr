@@ -53,13 +53,13 @@ class VideoApp(tk.Tk):
     def play_video(self):
         ret, frame = self.cap.read()
         if ret:
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame = cv2.cvtColor(frame, 4)
             frame = cv2.resize(frame, (self.video_width, self.video_height))
             img = Image.fromarray(frame)
             img = ImageTk.PhotoImage(image=img)
             self.video_label.img = img
             self.video_label.config(image=img)
-            self.video_label.after(10, self.play_video)
+            self.video_label.after(10000, self.play_video)  
         else:
             self.stop_video()
 
