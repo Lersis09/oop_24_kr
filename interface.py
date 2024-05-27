@@ -78,10 +78,10 @@ class VideoApp(tk.Tk):
                 elif filter_name == "Ши-Томасі":
                     frame = self.apply_corner_detection(frame,max_corners=20, quality_level=0.01, min_dist=50)
                 elif filter_name == "Кольорове перетворення":
-                    frame = self.apply_colorspace_change(frame,'YUV')
+                    frame = self.apply_colorspace_change(frame, 82)
                 elif filter_name == "Гаусів фільтр":
                     frame = self.apply_gaussian_filter(frame, kernel_size=11)
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                frame = cv2.cvtColor(frame, 4)
                 img = Image.fromarray(frame)
                 img = ImageTk.PhotoImage(image=img)
                 self.video_label.img = img
@@ -97,7 +97,7 @@ class VideoApp(tk.Tk):
 
     def apply_corner_detection(self, frame, max_corners=5, quality_level=0.01, min_dist=20):
         new_frame = frame.copy()
-        gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        gray_frame = cv2.cvtColor(frame, 6)
         corners = cv2.goodFeaturesToTrack(gray_frame, max_corners, quality_level, min_dist)
         corners = np.int0(corners)
         for item in corners:
@@ -105,7 +105,7 @@ class VideoApp(tk.Tk):
             cv2.circle(new_frame, (x, y), 5, (255, 255, 255), -1)
         return new_frame
 
-    def apply_colorspace_change(self, frame, colorspace_index=cv2.COLOR_BGR2GRAY):
+    def apply_colorspace_change(self, frame, colorspace_index=6):
         return cv2.cvtColor(frame, colorspace_index)
 
     def apply_gaussian_filter(self, frame, kernel_size=3):
