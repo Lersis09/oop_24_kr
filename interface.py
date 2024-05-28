@@ -119,8 +119,8 @@ class VideoApp(tk.Tk):
                         max_corners = int(entry.get())
                         frame = self.apply_corner_detection(frame, max_corners)
                     elif filter_name == "Кольорове перетворення":
-                        colorspace_index = int(entry.get())
-                        frame = self.apply_colorspace_change(frame, colorspace_index)
+                        frame = cv2.cvtColor(frame, 82)
+                        frame = cv2.split(frame)[0]
                     elif filter_name == "Гаусів фільтр":
                         kernel_size = int(entry.get())
                         frame = self.apply_gaussian_filter(frame, kernel_size)
