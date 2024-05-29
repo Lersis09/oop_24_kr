@@ -18,6 +18,10 @@ class VideoApp(tk.Tk):
         self.create_widgets()
         self.create_filter_controls()
 
+        self.current_mode = 'Basic'
+
+    def change_current_mode(self, filter_name):
+        self.current_mode = filter_name
     def create_filter_controls(self):
         self.filter_controls = {}
 
@@ -66,7 +70,7 @@ class VideoApp(tk.Tk):
         self.filter_buttons = []
         filters = ["Віддзеркалення", "Ши-Томасі", "Кольорове перетворення", "Гаусів фільтр"]
         for filter_name in filters:
-            button = tk.Button(self, text=filter_name, command=lambda f=filter_name: self.apply_filter(f))
+            button = tk.Button(self, text=filter_name, command=lambda f=filter_name: self.change_current_mode(f))
             button.pack()
             self.filter_buttons.append(button)
 
@@ -93,6 +97,7 @@ class VideoApp(tk.Tk):
         if ret:
             frame = cv2.cvtColor(frame, 4)
             frame = cv2.resize(frame, (self.video_width, self.video_height))
+            frame = self.apply_filters(frame)
             img = Image.fromarray(frame)
             img = ImageTk.PhotoImage(image=img)
             self.video_label.img = img
@@ -107,28 +112,24 @@ class VideoApp(tk.Tk):
             self.video_source = None
             cv2.destroyAllWindows()
 
-    def apply_filters(self):
-        if self.cap:
-            ret, frame = self.cap.read()
-            if ret:
-                for filter_name, entry in self.filter_controls.items():
-                    if filter_name == "Віддзеркалення":
-                        mirror_value = int(entry.get())
-                        frame = self.apply_mirror(frame, mirror_value)
-                    elif filter_name == "Ши-Томасі":
-                        max_corners = int(entry.get())
-                        frame = self.apply_corner_detection(frame, max_corners)
-                    elif filter_name == "Кольорове перетворення":
-                        frame = cv2.cvtColor(frame, 82)
-                        frame = cv2.split(frame)[0]
-                    elif filter_name == "Гаусів фільтр":
-                        kernel_size = int(entry.get())
-                        frame = self.apply_gaussian_filter(frame, kernel_size)
-                frame = cv2.cvtColor(frame, 4)
-                img = Image.fromarray(frame)
-                img = ImageTk.PhotoImage(image=img)
-                self.video_label.img = img
-                self.video_label.config(image=img)
+    def apply_filters(self, frame):
+        if self.current_mode == 'Basic':
+            return frame
+        elif self.current_mode in self.filter_controls:
+            current_entry = self.filter_controls.get(self.current_mode)
+            if self.current_mode == "Віддзеркалення":
+                mirror_value = int(current_entry.get())
+                frame = self.apply_mirror(frame, mirror_value)
+            elif self.current_mode == "Ши-Томасі":
+                max_corners = int(current_entry.get())
+                frame = self.apply_corner_detection(frame, max_corners)
+            elif self.current_mode == "Кольорове перетворення":
+                frame = cv2.cvtColor(frame, 82)
+                frame = cv2.split(frame)[0]
+            elif self.current_mode == "Гаусів фільтр":
+                kernel_size = int(current_entry.get())
+                frame = self.apply_gaussian_filter(frame, kernel_size)
+        return frame
 
     def apply_mirror(self, frame, mirror_value):
         rows, cols = frame.shape[:2]
