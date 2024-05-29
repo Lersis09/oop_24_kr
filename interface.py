@@ -43,7 +43,7 @@ class VideoApp(tk.Tk):
         shi_tomasi_label = tk.Label(self.filter_params_frame, text="Макс. к-ть кутів:")
         shi_tomasi_label.grid(row=2, column=0, padx=5, pady=5)
         self.shi_tomasi_max_corners_entry = tk.Entry(self.filter_params_frame)
-        self.shi_tomasi_max_corners_entry.insert(0, "20")
+        self.shi_tomasi_max_corners_entry.insert(0, "50")
         self.shi_tomasi_max_corners_entry.grid(row=2, column=1, padx=5, pady=5)
 
         yuv_label = tk.Label(self.filter_params_frame, text="Канал U кольорового простору YUV:")
@@ -139,7 +139,7 @@ class VideoApp(tk.Tk):
         img_output = cv2.warpAffine(frame, affine_matrix, (cols, rows))
         return img_output
 
-    def apply_corner_detection(self, frame, max_corners, quality_level=0.01, min_dist=20):
+    def apply_corner_detection(self, frame, max_corners, quality_level=0.01, min_dist=50):
         new_frame = frame.copy()
         gray_frame = cv2.cvtColor(frame, 6)
         corners = cv2.goodFeaturesToTrack(gray_frame, max_corners, quality_level, min_dist)
